@@ -1,8 +1,8 @@
 SEOBS
-# Overview
+Overview
 This script processes and analyzes data extracted from .tar files containing website snapshots and metadata. The script performs the following tasks:
 
-# Extraction: Extracts contents from .tar files.
+Extraction: Extracts contents from .tar files.
 Text and HTML Analysis: Analyzes the text and HTML content, extracting key elements like titles, headings, images, paragraphs, and list items.
 Text Metrics Calculation: Calculates various text metrics such as word counts, Functional Word Ratio (FWR), and Type-Token Ratio (TTR).
 Data Aggregation: Collects the analyzed data and writes it to a CSV file.
@@ -30,7 +30,7 @@ The main loop iterates through each query directory, processes the data, and wri
 CSV Output
 The script generates a CSV file named all_queries_domains_with_ranks_and_snapshots.csv with the following columns:
 
-# Query: The search query.
+Query: The search query.
 Domain: The domain of the website.
 Rank: The rank of the domain in search results.
 Title: The title of the webpage.
@@ -63,7 +63,7 @@ Output: The final CSV file will be generated in the specified location.
 Search Engine Observatory Visualization
 This HTML page provides a visual representation of the ranking of domains for different queries on Google over three different dates. It allows users to analyze and observe changes in search results over time.
 
-# Key Features
+Key Features
 Query Selection: Choose a query from the dropdown list to display the top domains for that specific date.
 Domain Comparison: Compare domains across different dates to identify common domains and new entries.
 How to Use
@@ -79,13 +79,13 @@ The charts are designed to be responsive and adjust to various screen sizes.
 CSS Styling
 The page includes styling for the body, chart containers, chart titles, and navigation elements. Key style elements include:
 
-# Body: A light gray background with a monospace font.
+Body: A light gray background with a monospace font.
 Chart Containers: White background with rounded corners and light shadow for depth.
 Navigation: A top navigation bar with links to different sections of the observatory.
 JavaScript
 The script includes functions for:
 
-# Creating Charts: Setting up SVG elements, scales, and axes for the bar charts.
+Creating Charts: Setting up SVG elements, scales, and axes for the bar charts.
 Updating Charts: Updating the charts based on the selected query and sort options.
 Comparing Domains: Identifying and displaying common and unique domains across different datasets.
 Data
