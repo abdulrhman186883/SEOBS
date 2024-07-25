@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Search Engine Observatory</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>D3.js Bar Chart with Rainbow X-axis Labels</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+      /* Body styling */
+      body {
+        font-family: Andale Mono, monospace;
+        background-color: #f0f0f0; /* Light gray background */
+        padding: 20px;
+      }
+
+      /* Chart container styling */
+      .chart-container {
+        background-color: #ffffff; /* White background */
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+        margin-bottom: 30px;
+      }
+
+      /* Chart title styling */
+      .chart-title {
+        font-size: 25px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      /* Select box styling */
+      select {
+        font-size: 16px;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      /* Button styling */
+      .sort-button,
+      .compare-button {
+        font-size: 14px;
+        padding: 8px 12px;
+        background-color: #007bff; /* Bootstrap blue color */
+        color: #ffffff; /* White text */
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-top: 10px;
+        margin-right: 5px;
+      }
+
+      .sort-button:hover,
+      .compare-button:hover {
+        background-color: #0056b3; /* Darker shade on hover */
+      }
+
+      /* SVG styling */
+      svg {
+        font-size: 14px; /* Base font size for SVG elements */
+      }
+
+      /* Bar styling */
+      .bar {
+        fill: steelblue;
+        mix-blend-mode: multiply;
+      }
+
+      .domain-list {
+        counter-reset: list-counter; /* Initialize the counter */
+      }
+
+      .domain-list li {
+        counter-increment: list-counter; /* Increment the counter for each list item */
+        list-style: none; /* Remove default list styling */
+      }
+
+      .domain-list li::before {
+        content: counter(list-counter) ". "; /* Add the counter value before each list item */
+      }
+
+      /* Domain list styling */
+      .domain-list {
+        font-size: 14px;
+        margin-top: 10px;
+      }
+
+      .domain-list ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .domain-list li {
+        margin-bottom: 5px;
+      }
+
+      body {
+        background-color: rgb(255, 255, 255);
+        /*margin-left: 100px;
+    margin-right: 100px;
+    margin-top: 50px;*/
+        font-family: Andale Mono, monospace;
+      }
+      .header {
+        background-color: #222;
+        padding: 30px;
+        text-align: center;
+        font-size: 35px;
+        color: white;
+      }
+      /* Style the top navigation bar */
+      .topnav {
+        overflow: hidden;
+        background-color: white;
+        display: flex;
+        justify-content: center; /* Centers items horizontally */
+      }
+
+      /* Style the topnav links */
+      .topnav a {
+        float: left;
+        display: block;
+        color: black;
+        text-align: center;
+        /*padding: 14px 30px;*/
+        text-decoration: none;
+        padding-top: 14px;
+        padding-bottom: 14px;
+        width: 16.66%;
+      }
+
+      /* Change color on hover */
+      .topnav a:hover {
+        background-color: #ddd;
+        color: black;
+      }
+
+      h3 {
+        color: rgb(22, 46, 23);
+        text-align: center;
+      }
+      p {
+        font-size: 1.5rem;
+        color: white;
+        text-align: center;
+      }
+
+      .bodytext {
+        color: black;
+      }
+
+      .div1 {
+        display: flex;
+        justify-content: center;
+      }
+
+      .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: rgb(85, 83, 75);
+        color: black;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      Search Engine Observatory
+      <p>Is Google getting worse? - An Observation</p>
+    </div>
+    <div class="topnav">
+      <a href="https://anni90123.github.io/index.html">Introduction</a>
+      <a href="https://anni90123.github.io/property.html"
+        >Property Observation</a
+      >
+      <a href="https://anni90123.github.io/temporal.html"
+        >temporal Observation</a
+      >
+    </div>
+
+    <p class="bodytext">
+      This program visualizes the ranking of domains for different queries on
+      Google over three different dates. It helps to analyze and observe changes
+      in search results over time.
+    </p>
+
+    <p class="bodytext">
+      How to use ? Easy!! choose the query from the list and the top domains
+      will show up in this specific date.
+    </p>
+
+    <!-- Chart 1 -->
+    <div id="chart1" class="chart-container">
+      <div class="chart-title">Chart 1: 8.3.2024</div>
+      <select id="queryOptions1"></select>
+      <div class="domain-list">
+        <strong>Domains:</strong>
+        <ul></ul>
+      </div>
+    </div>
+
+    <!-- Chart 2 -->
+    <div id="chart2" class="chart-container">
+      <div class="chart-title">Chart 2: 24.6.2024</div>
+      <select id="queryOptions2"></select>
+      <div class="domain-list">
+        <strong>Domains:</strong>
+        <ul></ul>
+      </div>
+    </div>
+
+    <!-- Chart 3 -->
+    <div id="chart3" class="chart-container">
+      <div class="chart-title">Chart 3: 25.4.2024</div>
+      <select id="queryOptions3"></select>
+      <div class="domain-list">
+        <strong>Domains:</strong>
+        <ul></ul>
+      </div>
+    </div>
+
+    <!-- Compare Button -->
+    <button class="compare-button" onclick="compareDomains()">
+      Compare Domains
+    </button>
+
+    <!-- Comparison Result -->
+    <div id="comparisonResult" class="chart-container">
+      <div class="chart-title">Comparison Result</div>
+
+      <div class="domain-list" id="comparisonResult12">
+        <strong>Common Domains between Chart 1 and Chart 2:</strong>
+        <ul></ul>
+      </div>
+
+      <div class="domain-list" id="comparisonResult13">
+        <strong>Common Domains between Chart 1 and Chart 3:</strong>
+        <ul></ul>
+      </div>
+
+      <div class="domain-list" id="comparisonResult23">
+        <strong>Common Domains between Chart 2 and Chart 3:</strong>
+        <ul></ul>
+      </div>
+
+      <div class="domain-list" id="comparisonResult123">
+        <strong>Common Domains across all three charts:</strong>
+        <ul></ul>
+      </div>
+
+      <div class="domain-list" id="newDomains1">
+        <strong>New Domains in Chart 1:</strong>
+        <ul></ul>
+      </div>
+
+      <div class="domain-list" id="newDomains2">
+        <strong>New Domains in Chart 2:</strong>
+        <ul></ul>
+      </div>
+
+      <div class="domain-list" id="newDomains3">
+        <strong>New Domains in Chart 3:</strong>
+        <ul></ul>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="divLeft">Bauhaus-Universität Weimar</div>
+    </div>
+
+    <script>
+      // Function to generate rainbow colors based on position
+      function rainbowColorScale(position, total) {
+        const hue = (position / total) * 360; // Scale hue from 0 to 360
+        return `hsl(${hue}, 80%, 60%)`; // Use HSL color model for rainbow effect
+      }
+
+      // Function to create a chart
+      function createChart(chartId, data) {
+        // Set up the dimensions and margins of the graph
+        const margin = { top: 20, right: 30, bottom: 40, left: 60 }; // Increased left margin for x-axis labels
+        const width = 800 - margin.left - margin.right; // Adjusted width for more space
+        const height = 300 - margin.top - margin.bottom;
+
+        // Create the SVG container
+        const svg = d3
+          .select(`#${chartId}`)
+          .append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+          .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        // Function to extract main domain from URL
+        function extractMainDomain(url) {
+          let domain = url;
+          // Find & remove protocol (http, ftp, etc.) and get main domain
+          if (url.indexOf("://") > -1) {
+            domain = url.split("/")[2];
+          } else {
+            domain = url.split("/")[0];
+          }
+          // Find & remove port number
+          domain = domain.split(":")[0];
+          // Find & remove "?"
+          domain = domain.split("?")[0];
+          return domain;
+        }
+
+        // Extract unique queries from the data
+        const uniqueQueries = [...new Set(data.map((d) => d.Query))];
+
+        // Populate query options in the dropdown
+        d3.select(`#queryOptions${chartId.charAt(chartId.length - 1)}`)
+          .selectAll("option")
+          .data(uniqueQueries)
+          .enter()
+          .append("option")
+          .text((d) => d)
+          .attr("value", (d) => d);
+
+        // Initialize chart with the first query
+        updateChart(data.filter((d) => d.Query === uniqueQueries[0]));
+
+        // Handle query selection change event
+        d3.select(`#queryOptions${chartId.charAt(chartId.length - 1)}`).on(
+          "change",
+          function () {
+            const selectedQuery = d3.select(this).property("value");
+            updateChart(data.filter((d) => d.Query === selectedQuery));
+          }
+        );
+
+        // Sort button event listener
+        d3.select(`#sort${chartId.charAt(chartId.length - 1)}`).on(
+          "click",
+          function () {
+            const sortByRank = this.textContent === "Sort by Rank";
+            const sortedData = sortByRank
+              ? data.sort((a, b) => a.Rank - b.Rank)
+              : data.sort((a, b) => {
+                  return a.MainDomain.localeCompare(b.MainDomain);
+                });
+            updateChart(sortedData);
+            this.textContent = sortByRank ? "Sort by Domain" : "Sort by Rank";
+          }
+        );
+
+        // Update function to handle data updates
+        function updateChart(data) {
+          // Parse the data
+          data.forEach((d) => {
+            d.Rank = +d.Rank; // Convert Rank to numeric
+            d.MainDomain = extractMainDomain(d.Domain); // Extract main domain
+          });
+
+          // Set up scales
+          const x = d3
+            .scaleBand()
+            .domain(data.map((d) => d.MainDomain)) // Use 'MainDomain' for x-axis
+            .range([0, width])
+            .padding(0.3); // Increased padding for more space between bars
+
+          const y = d3.scaleLinear().domain([0, 20]).range([height, 0]);
+
+          // Create axes
+          const xAxis = d3.axisBottom(x);
+
+          // Select and style x-axis labels
+          svg
+            .selectAll(".x-axis")
+            .data([null])
+            .join("g")
+            .attr("class", "x-axis")
+            .attr("transform", `translate(0, ${height})`)
+            .call(xAxis)
+            .selectAll("text")
+            .attr("y", 0)
+            .attr("x", 9)
+            .attr("dy", ".35em")
+            .attr("transform", "rotate(-15)") // Rotate labels for better fit
+            .style("text-anchor", "end") // Align text at the end for better fit
+            .style("fill", (d, i) => rainbowColorScale(i, data.length)); // Apply rainbow colors based on position
+
+          const yAxis = d3.axisLeft(y).ticks(20); // Set the number of ticks explicitly
+
+          svg
+            .selectAll(".y-axis")
+            .data([null])
+            .join("g")
+            .attr("class", "y-axis")
+            .call(yAxis);
+
+          // Render the bars (or any other visual representation)
+          const bars = svg.selectAll(".bar").data(data, (d) => d.Domain);
+
+          bars.exit().remove();
+
+          bars
+            .enter()
+            .append("rect")
+            .attr("class", "bar")
+            .merge(bars)
+            .transition()
+            .duration(750)
+            .attr("x", (d) => x(d.MainDomain))
+            .attr("width", x.bandwidth())
+            .attr("y", (d) => y(d.Rank))
+            .attr("height", (d) => height - y(d.Rank))
+            .attr("fill", "steelblue")
+            .style("mix-blend-mode", "multiply");
+
+          // Update the domain list below the chart
+          updateDomainList(data);
+        }
+
+        // Function to update the domain list below the chart
+        function updateDomainList(data) {
+          const domainList = d3.select(`#${chartId} .domain-list ul`);
+          domainList.selectAll("li").remove(); // Clear previous list items
+
+          const representedDomains = new Set(data.map((d) => d.Domain));
+          const uniqueDomains = Array.from(representedDomains);
+
+          // Set up color scale
+          const colorScale = d3
+            .scaleOrdinal()
+            .domain(uniqueDomains)
+            .range(
+              uniqueDomains.map((domain, i) =>
+                rainbowColorScale(i, uniqueDomains.length)
+              )
+            );
+
+          uniqueDomains.forEach((domain) => {
+            const listItem = domainList.append("li");
+            listItem.text(domain).style("color", colorScale(domain)); // Apply color from the scale
+          });
+        }
+      }
+
+      // Load the CSV data and create each chart
+      let data1, data2, data3;
+      Promise.all([
+        d3.csv("8.3.2024all_queries_domains_with_ranks_and_snapshots.csv"),
+        d3.csv("24.6.2024.all_queries_domains_with_ranks_and_snapshots.csv"),
+        d3.csv("25.4.2024all_queries_domains_with_ranks_and_snapshots.csv"),
+      ])
+        .then(([d1, d2, d3]) => {
+          data1 = d1;
+          data2 = d2;
+          data3 = d3;
+          createChart("chart1", data1);
+          createChart("chart2", data2);
+          createChart("chart3", data3);
+        })
+        .catch((error) => {
+          console.error("Error loading the data: ", error);
+        });
+
+      // Compare domains across charts
+      function compareDomains() {
+        const query1 = d3.select("#queryOptions1").property("value");
+        const query2 = d3.select("#queryOptions2").property("value");
+        const query3 = d3.select("#queryOptions3").property("value");
+
+        const domains1 = data1
+          .filter((d) => d.Query === query1)
+          .map((d) => d.Domain);
+        const domains2 = data2
+          .filter((d) => d.Query === query2)
+          .map((d) => d.Domain);
+        const domains3 = data3
+          .filter((d) => d.Query === query3)
+          .map((d) => d.Domain);
+
+        // Find common domains
+        const commonDomains12 = domains1.filter((d) => domains2.includes(d));
+        const commonDomains13 = domains1.filter((d) => domains3.includes(d));
+        const commonDomains23 = domains2.filter((d) => domains3.includes(d));
+        const commonDomains123 = domains1.filter(
+          (d) => domains2.includes(d) && domains3.includes(d)
+        );
+
+        // Find new domains unique to each dataset
+        const newDomains1 = domains1.filter(
+          (d) => !domains2.includes(d) && !domains3.includes(d)
+        );
+        const newDomains2 = domains2.filter(
+          (d) => !domains1.includes(d) && !domains3.includes(d)
+        );
+        const newDomains3 = domains3.filter(
+          (d) => !domains1.includes(d) && !domains2.includes(d)
+        );
+
+        // Display common and new domains
+        function updateDomainList(elementId, domains) {
+          const domainList = d3.select(elementId).select("ul");
+          domainList.selectAll("li").remove(); // Clear previous list items
+
+          domains.forEach((domain) => {
+            const listItem = domainList.append("li");
+            listItem.text(domain);
+          });
+        }
+
+        // Update the comparison result with new lists
+        updateDomainList("#comparisonResult12", commonDomains12);
+        updateDomainList("#comparisonResult13", commonDomains13);
+        updateDomainList("#comparisonResult23", commonDomains23);
+        updateDomainList("#comparisonResult123", commonDomains123);
+        updateDomainList(
+          "#newDomains1",
+          newDomains1.map((domain) => domain + " (Chart 1)")
+        );
+        updateDomainList(
+          "#newDomains2",
+          newDomains2.map((domain) => domain + " (Chart 2)")
+        );
+        updateDomainList(
+          "#newDomains3",
+          newDomains3.map((domain) => domain + " (Chart 3)")
+        );
+      }
+    </script>
+  </body>
+</html>
